@@ -1,0 +1,16 @@
+#set($length=$package.Service.length() - 8)
+#set($prefix=$package.Service.substring(0, $length))
+#set($lowerEntity=$entity.substring(0,1).toLowerCase() + $entity.substring(1))
+package ${prefix}.service;
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+
+/**
+ * $!{table.comment}Manager
+ * @author ${author}
+ * ${date}
+ */
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+
+
+}

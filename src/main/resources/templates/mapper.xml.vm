@@ -1,0 +1,93 @@
+#set($length=$package.Service.length() - 8)
+#set($prefix=$package.Service.substring(0, $length))
+#set($lowerEntity=$entity.substring(0,1).toLowerCase() + $entity.substring(1))
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${prefix}.dao.mapper.${table.mapperName}">
+
+#if(${enableCache})
+	<!-- 开启二级缓存 -->
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+#end
+#if(${baseResultMap})
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="${package.Entity}.${entity}">
+#foreach($field in ${table.fields})
+#if(${field.keyFlag})##生成主键排在第一位
+		<id column="${field.name}" property="${field.propertyName}" />
+#end
+#end
+#foreach($field in ${table.commonFields})##生成公共字段
+	<result column="${field.name}" property="${field.propertyName}" />
+#end
+#foreach($field in ${table.fields})
+#if(!${field.keyFlag})##生成普通字段
+		<result column="${field.name}" property="${field.propertyName}" />
+#end
+#end
+	</resultMap>
+
+#end
+#if(${baseColumnList})
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+#foreach($field in ${table.commonFields})
+	#if(${field.name} == ${field.propertyName})${field.name}#else${field.name} AS ${field.propertyName}#end,
+#end
+        ${table.fieldNames}
+    </sql>
+#end
+    <!-- 保存或更新$!{table.comment} -->
+    <insert id="saveOrUpdate">
+        INSERT INTO $!{table.name}(
+	#foreach($field in ${table.fields})
+		${field.name}#if($foreach.count != $table.fields.size()),#end
+#end
+	) VALUES (
+	#foreach($field in ${table.fields})
+		#{${lowerEntity}.${field.propertyName}}#if($foreach.count != $table.fields.size()),#end
+	#end
+	)ON duplicate KEY UPDATE
+	#foreach($field in ${table.fields})
+		${field.name} = VALUES(${field.name})#if($foreach.count != $table.fields.size()),#end
+#end
+    </insert>
+
+    <!-- 批量保存$!{table.comment} -->
+    <insert id="batchSave">
+        INSERT INTO $!{table.name}(
+	#foreach($field in ${table.fields})
+		${field.name}#if($foreach.count != $table.fields.size()),#end
+#end
+	) VALUES
+        <foreach collection="${lowerEntity}List" item="${lowerEntity}" separator=",">
+		(
+	#foreach($field in ${table.fields})
+        #{${lowerEntity}.${field.propertyName}}#if($foreach.count != $table.fields.size()),#end
+#end
+		)
+        </foreach>
+    </insert>
+
+    <!-- 批量保存或更新$!{table.comment} -->
+    <insert id="batchSaveOrUpdate">
+        INSERT INTO $!{table.name}(
+	#foreach($field in ${table.fields})
+		${field.name}#if($foreach.count != $table.fields.size()),#end
+#end
+	) VALUES
+        <foreach collection="${lowerEntity}List" item="${lowerEntity}" separator=",">
+		(
+	#foreach($field in ${table.fields})
+		#{${lowerEntity}.${field.propertyName}}#if($foreach.count != $table.fields.size()),#end
+#end
+		)
+        </foreach>
+		ON duplicate KEY UPDATE
+	#foreach($field in ${table.fields})
+		${field.name} = VALUES(${field.name})#if($foreach.count != $table.fields.size()),#end
+#end
+    </insert>
+</mapper>

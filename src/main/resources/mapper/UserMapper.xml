@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.touchme.agentpay.dao.mapper.UserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.touchme.agentpay.entity.User">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+	</resultMap>
+
+    <!-- 保存或更新 -->
+    <insert id="saveOrUpdate">
+        INSERT INTO user(
+		id,
+		name
+	) VALUES (
+		#{user.id},
+		#{user.name}
+	)ON duplicate KEY UPDATE
+		id = VALUES(id),
+		name = VALUES(name)
+    </insert>
+
+    <!-- 批量保存 -->
+    <insert id="batchSave">
+        INSERT INTO user(
+		id,
+		name
+	) VALUES
+        <foreach collection="userList" item="user" separator=",">
+		(
+        #{user.id},
+        #{user.name}
+		)
+        </foreach>
+    </insert>
+
+    <!-- 批量保存或更新 -->
+    <insert id="batchSaveOrUpdate">
+        INSERT INTO user(
+		id,
+		name
+	) VALUES
+        <foreach collection="userList" item="user" separator=",">
+		(
+		#{user.id},
+		#{user.name}
+		)
+        </foreach>
+		ON duplicate KEY UPDATE
+		id = VALUES(id),
+		name = VALUES(name)
+    </insert>
+</mapper>

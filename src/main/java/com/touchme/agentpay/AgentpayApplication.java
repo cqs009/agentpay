@@ -2,12 +2,10 @@ package com.touchme.agentpay;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-@MapperScan()
+@SpringBootApplication
+@MapperScan("com.touchme.agentpay.mapper")
 public class AgentpayApplication {
 
     public static void main(String[] args) {
