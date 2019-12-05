@@ -1,0 +1,11 @@
+server:
+  port: 8080 #端口
+
+#配置环境
+spring:
+  profiles:
+    active: dev
+
+#在线接口文档配置
+swagger:
+  enable: true
