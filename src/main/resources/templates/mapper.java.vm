@@ -1,0 +1,43 @@
+#set($length=$package.Service.length() - 8)
+#set($prefix=$package.Service.substring(0, $length))
+#set($lowerEntity=$entity.substring(0,1).toLowerCase() + $entity.substring(1))
+package ${prefix}.mapper;
+
+import ${package.Entity}.${entity};
+import ${superMapperClassPackage};
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+/**
+ * $!{table.comment}Mapper
+ * @author ${author}
+ * ${date}
+ */
+@Mapper
+public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
+
+    /**
+     * 保存或更新$!{table.comment}
+     * @param ${lowerEntity} $!{table.comment}
+     * @author ${author}
+     * ${date}
+     */
+    void saveOrUpdate(@Param("${lowerEntity}") ${entity} ${lowerEntity});
+    /**
+     * 批量保存$!{table.comment}
+     * @param ${lowerEntity}List $!{table.comment}
+     * @author ${author}
+     * ${date}
+     */
+    void batchSave(@Param("${lowerEntity}List") List<${entity}> ${lowerEntity}List);
+
+    /**
+     * 批量保存或更新$!{table.comment}
+     * @param ${lowerEntity}List $!{table.comment}
+     * @author ${author}
+     * ${date}
+     */
+    void batchSaveOrUpdate(@Param("${lowerEntity}List") List<${entity}> ${lowerEntity}List);
+}
